@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Concursio colorum</title>
+	<style>
+@font-face { font-family:'test'; font-weight: 200 700; src:url("https://m-casanova.github.io/Pass-A38/font/Pass_A38.woff2") format("woff2-variations"); }
+:root {
+ --b0:#fff; --b1:#332925; --b2:#006644; --b3:#b36b00; --b4:#b32d43;
+ --c0:#003366; --c1:#004080; --c2:#004d99; --c3:#0066cc; --c4:#207ad5; --c5:#4392E0; --c6:#6aaaeb; --c7:#94c4f5; --c8:#bfdfff; --c9:#f2f7fc;
+ --n0:#17324d; --n1:#2f475e; --n2:#455b71; --n3:#5c6f82; --n4:#768594; --n5:#929da9; --n6:#a3adb7; --n7:#c5c7c9; --n8:#d9dadb; --n9:#ebeced;
+}
+html, body { height: 100% }
+body { font-family:'test', sans-serif; font-size:16pt; margin:0; padding:0; background: var(--b0) }
+div { margin:0; padding:0; }
+
+header { width: 100%; margin:0; padding:0 }
+header a { color: var(--b0) }
+header a.b { color: var(--b0); text-decoration: none }
+header > div { color: var(--b0); width:100%; }
+header > div.info { background: var(--c2); }
+header > div.titolo { background: var(--c3); }
+header > div > div { width: 1180px; margin: 0px auto; padding:0 }
+header div div p { margin:0; padding:10px; font-size: 12pt }
+header div div h1 { margin:0; padding:20px 10px; font-size: 40px; line-eight: 1em; font-weight: 350; color: var(--b0); }
+
+main { width: 1180px; margin:60px auto 60px; padding:0 }
+
+div.side { width: 249px; margin: 30px 0 0; padding:10px 10px 5px; float:left; border-right:1px solid var(--n7); color: var(--b1); }
+div.side p { font-size: 14pt }
+div.side h4 { font-size: 16pt; font-weight: 600; margin: 0 }
+
+article { width: 890px; margin: 0 0 0 290px; padding:0; min-height: 300px }
+article p { margin: 5px 10px; padding:0; color: (--b1); }
+
+footer { padding:0; margin:0; width: 100%; background: var(--n3); color: var(--b0) }
+footer > div { padding: 40px 0; margin:0 auto; width: 1180px }
+footer p { margin: 0 10px; font-size: 18px }
+footer a { color: var(--b0); font-weight: 450; }
+
+h2 { margin:30px 10px;padding:0; font-size: 32px; line-height: 1em; font-weight: 400; color: var(--c2) }
+h3 { margin:40px 10px 0px; padding: 0; color: var(--c2); font-size: 28px; font-weight: 600; }
+h4 { margin:30px 10px 0px; padding: 0; color: var(--c2); font-size: 24px; font-weight: 600; }
+p.info { font-weight: 450; margin: 0 10px; font-size: 18px; color: var(--n2)}
+
+.tabs { display: flex; cursor: pointer; border-bottom: 2px solid var(--c3); }
+.tabs div { padding: 10px 20px; margin-right: 10px; background-color: var(--n9); border: 1px solid var(--n7); border-bottom: none; }
+.tabs div.active { background-color: var(--c3); color: var(--b0); }
+
+.tab-content { padding: 20px; border: 1px solid var(--n7); border-top: none; }
+.tab-content > div { display: none; }
+.tab-content > div.active { display: block; }
+
+p.nascosto { display: none; }
+p.rosso { color: var(--b4); }
+
+input.colore, input.coloreE { border: 0; border-bottom: 1px solid var(--n7); font-family: 'test'; font-size: 18pt; color: #444; width: 160px }
+input.coloreE { border-bottom: 1px solid var(--b4); }
+input:focus { outline: none }
+input.scelta { display: none }
+input.scelta + label::before { content: ''; margin: 0 5px 0 0; color: #666; font-weight: 700 }
+input.scelta:checked + label::before { content: ''; color: #080 }
+button.esegui { border: 0; border-radius: 5px; padding: 5px 10px; background: var(--c3); color: var(--b0); font-family: 'test'; font-size: 16pt; font-weight: 450; margin: 10px 0 }
+button.esegui:hover { background: var(--c2); }
+
+table.tabella { width: 100%; text-align: center; padding: 0; font-size: 15px; margin: 20px 0 }
+table.tabella tr td { padding: 5px 10px; border: 0; border-bottom: 1px solid #ccc }
+table.tabella div.coloreB, table.tabella div.coloreN { width: 100%; border: 1px solid #ccc; color: #000; font-weight: 550 }
+table.tabella div.coloreB { color: #fff }
+
+.copia { cursor: pointer; color: #666 }
+.copia:hover { color: #000 }
+.rif { color: #666; text-decoration: none }
+.copia:hover { color: #000 }
+
+.contrasto { font-size: 16pt; border: 1px solid #ccc; text-align: left; padding: 8px 20px; margin: 10px 0 }
+
+span.l4 { color: #008000; }
+span.l3 { color: #00d000; }
+span.l2 { color: #ff8000; }
+span.l1 { color: #c00000; }
+
+.wrapper { min-height: 100%; display: grid; grid-template-rows: auto 1fr auto; }
+
+@media only screen and (max-width: 1200px) {
+	header > div > div { width: 100%; }
+	main { width: 100% }
+	article { width: 100%; margin: 0; }
+	footer > div { width: 100% }
+	div.side { display: none }
+}
+	</style>
+</head>
+<body>
+	<div class="wrapper">
+		<header>
+			<div class="info">
+				<div>
+					<p><a href="https://github.com/m-casanova/ConcursioColorum/"> GitHub</a></p>
+				</div>
+			</div>
+			<div class="titolo">
+				<div>
+					<h1><a href="/ci" target="_self" class="b">Concursio colorum</a></h1>
+				</div>
+			</div>
+		</header>
+		<main>
+			<div class="side">
+				<h4>Concursio colorum</h4>
+				<p>Alcuni test per l'accostamenti di colori</p>
+			</div>
+			<article>
+				<div class="tabs">
+					<div class="tab active" data-tab="t0">Info</div>
+					<div class="tab" data-tab="t1">Colore</div>
+					<div class="tab" data-tab="t2">Sfumature</div>
+					<div class="tab" data-tab="t3">Contrasto</div>
+				</div>
+				<div class="tab-content">
+					<div id="t0" class="active">
+						<h2>Test per verificare i colori</h2>
+						<p>Alcuni test per creare accostamenti significativi di colori.</p>
+						<p>Le sfumature di colore sono create secondo una formula totalmente arbitraria.</p>
+						<p>Per il calcolo del contrasto si utilizza la definizione WCAG 2 (cfr. <i><a href="https://www.w3.org/TR/WCAG20/#contrast-ratiodef" target="_blank">contrast ratio</a></i> e <i><a href="https://www.w3.org/TR/WCAG20/#relativeluminancedef" target="_blank">relative luminance</a></i>).</p>
+						<p>Il carattere utilizzato per questa pagina è <a href="https://github.com/m-casanova/Pass-A38">Pass A38</a>.</p>
+					</div>
+					<div id="t1">
+						<h2>Colore</h2>
+						<p># <input type="text" value="0066CC" id="coloreC" class="colore" placeholder="colore"> <label for="coloreC">← Colore in formato esadecimale</label></p>
+						<p><button class="esegui" onclick="mostraInfo()">Mostra informazioni</button></p>
+						<p id="errore0" class="nascosto">Attenzione: Il colore inserito non è valido!</p>
+						<div id="infoColore"></div>
+						<h3>Informazioni</h3>
+						<p>A causa di arrotondamenti, possono esserci leggere discrepanze nella conversione tra valori <b>Hex</b> e <b>HSL</b>.</p>
+					</div>
+					<div id="t2">
+						<h2>Variazioni di un colore</h2>
+						<p># <input type="text" value="0066CC" id="coloreA" class="colore" placeholder="colore"> <label for="coloreA">← Colore in formato esadecimale</label></p>
+						<p>Scegli uno dei metodi per generare le sfumature:</p>
+						<p><input type="radio" class="scelta" id="fisso0" name="fisso" value="0" checked><label for="fisso0">Sistema variegato, costante: h</label></p>
+						<p><input type="radio" class="scelta" id="fisso1" name="fisso" value="1"><label for="fisso1">Costanti: h, s</label></p>
+						<p><input type="radio" class="scelta" id="fisso2" name="fisso" value="2"><label for="fisso2">Costanti: h, l</label></p>
+						<p><input type="radio" class="scelta" id="fisso3" name="fisso" value="3"><label for="fisso3">Colori vicini (arco 120°), costanti: l, s</label></p>
+						<p><button class="esegui" onclick="mostraTavola()">Mostra colori</button></p>
+						<p id="errore1" class="nascosto">Attenzione: Il colore inserito non è valido!</p>
+						<div id="tavolozza"></div>
+						<h3>Informazioni</h3>
+						<p>A causa di arrotondamenti, possono esserci leggere discrepanze nella conversione tra valori <b>Hex</b> e <b>HSL</b>.</p>
+						<p>La scala di contrasto considera i valori:</p>
+						<p>- <span class="l4">●</span> ottimo per valori di almeno 7:1, con ideale leggibilità</p>
+						<p>- <span class="l3">●</span> buono per valori di almeno 4.5:1, con buona leggibilità</p>
+						<p>- <span class="l2">●</span> accettabile per valori di almeno 3:1, ma solo con carattere di almeno 18pt o di almeno 14pt in grassetto</p>
+						<p>I valori inferiori a 3 <span class="l1">●</span> sono considerati da evitare.</p>
+					</div>
+					<div id="t3">
+						<h2>Calcola contrasto tra due colori</h2>
+						<p># <input type="text" value="FFFFFF" id="coloreB1" class="colore" placeholder="colore"> <label for="coloreB1">← Primo colore in formato esadecimale</label></p>
+						<p># <input type="text" value="0051A2" id="coloreB2" class="colore" placeholder="colore"> <label for="coloreB2">←Secondo colore in formato esadecimale</label></p>
+						<p><button class="esegui" onclick="mostraContrasto()">Mostra contrasto</button></p>
+						<p id="errore2" class="nascosto">Attenzione: Uno dei colori inseriti non è valido!</p>
+						<div id="differenza"></div>
+						<h3>Informazioni</h3>
+						<p>La scala di contrasto considera i valori:</p>
+						<p>- <span class="l4">●</span> ottimo per valori di almeno 7:1, con ideale leggibilità</p>
+						<p>- <span class="l3">●</span> buono per valori di almeno 4.5:1, con buona leggibilità</p>
+						<p>- <span class="l2">●</span> accettabile per valori di almeno 3:1, ma solo con carattere di almeno 18pt o di almeno 14pt in grassetto</p>
+						<p>I valori inferiori a 3 <span class="l1">●</span> sono considerati da evitare.</p>
+					</div>
+				</div>
+			</article>
+		</main>
+		<footer>
+		  <div>
+			<p>&copy; 2024 Michele Casanova.</p>
+		  </div>
+		</footer>
+	</div>
+<script>
+function testColore(a) {
+	if (a == null) return false;
+	a = a.trim().toUpperCase();
+	if (a.length !== 3 && a.length !== 6) return false;
+	if (!/^[0-9A-F]+$/.test(a)) return false;
+	if (a.length === 3) a = a.split('').map(c => c + c).join('');
+	return a;
+}
+
+function hex2rgb(hex) {
+	const bigint = parseInt(hex, 16);
+	const r = (bigint >> 16) & 255;
+	const g = (bigint >> 8) & 255;
+	const b = bigint & 255;
+	return [r, g, b];
+}
+
+function rgb2hex(r, g, b) {
+	return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase()}`;
+}
+
+function rgb2hsl(r, g, b) {
+	r /= 255;
+	g /= 255;
+	b /= 255;
+
+	const max = Math.max(r, g, b), min = Math.min(r, g, b);
+	let h, s, l = (max + min) / 2;
+
+	if (max === min) {
+		h = s = 0;
+	} else {
+		const d = max - min;
+		s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+		switch (max) {
+			case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+			case g: h = (b - r) / d + 2; break;
+			case b: h = (r - g) / d + 4; break;
+		}
+		h /= 6;
+	}
+
+	return [h * 360, s, l];
+}
+
+function hsl2rgb(h, s, l) {
+	const hue2rgb = (p, q, t) => {
+		if (t < 0) t += 1;
+		if (t > 1) t -= 1;
+		if (t < 1 / 6) return p + (q - p) * 6 * t;
+		if (t < 1 / 2) return q;
+		if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+		return p;
+	};
+
+	h /= 360;
+	let r, g, b;
+
+	if (s === 0) {
+		r = g = b = l;
+	} else {
+		const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+		const p = 2 * l - q;
+		r = hue2rgb(p, q, h + 1 / 3);
+		g = hue2rgb(p, q, h);
+		b = hue2rgb(p, q, h - 1 / 3);
+	}
+
+	return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+}
+
+function contrasto(r1, g1, b1, r2, g2, b2) {
+	const LumX = (t) => {
+		return (t/255 <= 0.03928) ? t / (255*12.92) : ((t/255 + 0.055) / 1.055) ** 2.4;
+	}
+	const Lum = (r, g, b) => {
+		return 0.2126 * LumX(r) + 0.7152 * LumX(g) + 0.0722 * LumX(b);
+	}
+	const L1 = Lum(r1,g1,b1), L2 = Lum(r2,g2,b2);
+	const Lmax = Math.max(L1, L2), Lmin = Math.min(L1, L2);
+	return Math.floor( 100*(Lmax+0.05)/(Lmin+0.05) ) / 100;
+}
+
+function strumenti(h,t) {
+ return ''.concat(' <span title="Copia negli appunti" class=\'copia\' onclick="navigator.clipboard.writeText(\'', h, '\');"></span> ',
+	'<a title=\'Sfumature\' class=\'rif\' href=\'?c=', h.slice(1), '\'></span> ',
+	'<a title=\'Contrasto\' class=\'rif\' href=\'?c2=', h.slice(1), '&c1=', t?'000000':'ffffff','\'></span>');
+}
+
+function generaTavola(baseR, baseG, baseB, fisso) {
+	const [baseH, baseS, baseL] = rgb2hsl(baseR, baseG, baseB);
+
+	const tavola = [];
+	const passiNum = 10;
+	const passi = [];
+
+	if (fisso == 0 || fisso == 1) {
+		const minL = (baseL < 0.15)?0:0.15;
+		const maxL = (baseL > 0.96)?1:0.96;
+		for (let i = 0; i < passiNum; i++) {
+			passi.push(minL + (i / (passiNum - 1)) * (maxL - minL));
+		}
+		const vicino = passi.reduce((prev, curr, idx) => {
+			return Math.abs(curr - baseL) < Math.abs(passi[prev] - baseL) ? idx : prev;
+		}, 0);
+
+		for (let i = 0; i < passiNum; i++) {
+			const currL = (i==vicino) ? baseL : (i < vicino)? (minL + (baseL - minL) * i/vicino) : ( baseL + (maxL - baseL) * (i - vicino)/(passiNum - 1 - vicino));
+			var currS;
+
+			if (fisso == 1 || baseL < 0.15 || baseL > 0.96 ) {
+				currS = baseS;
+			} else if (baseS > 0.55 && baseS < 0.65) {
+				currS = baseS;
+			} else if (baseS < 0.55) {
+				if (i <= vicino) {
+					currS = 0.6 + (baseS - 0.6) * currL / baseL;
+				} else {
+					currS = baseS + (0 - baseS) * (currL - baseL) / (1 - baseL);
+				}
+			} else {
+				if (currL <= baseL) {
+					currS = 1 + (baseS - 1) * currL / baseL;
+				} else {
+					currS = baseS + (0.6 - baseS) * (currL - baseL) / (1 - baseL);
+				}
+			}
+			const [r, g, b] = hsl2rgb(baseH, currS, currL);
+			tavola.push({ r: r, g: g, b: b, h: baseH, s: currS, l: currL });
+		}
+	} else if (fisso == 2) {
+		const minS = 0.01;
+		const maxS = 1;
+		for (let i = 0; i < passiNum; i++) {
+			passi.push(minS + (i / (passiNum - 1)) * (maxS - minS));
+		}
+		const vicino = passi.reduce((prev, curr, idx) => {
+			return Math.abs(curr - baseS) < Math.abs(passi[prev] - baseS) ? idx : prev;
+		}, 0);
+		for (let i = 0; i < passiNum; i++) {
+			const currS = (i == vicino) ? baseS : (i < vicino)? (minS + (baseS - minS) * i/vicino) : ( baseS + (maxS - baseS) * (i - vicino)/(passiNum - 1 - vicino));
+			const [r, g, b] = hsl2rgb(baseH, currS, baseL);
+			tavola.push({ r: r, g: g, b: b, h: baseH, s: currS, l: baseL });
+		}
+	} else if (fisso == 3) {
+		const minH = baseH - Math.floor((passiNum-1)/2)*120/(passiNum-1);
+		const maxH = baseH + Math.floor(passiNum/2)*120/(passiNum-1);
+		for (let i = 0; i < passiNum; i++) {
+			passi.push(minH + (i / (passiNum - 1)) * (maxH - minH));
+		}
+		const vicino = passi.reduce((prev, curr, idx) => {
+			return Math.abs(curr - baseS) < Math.abs(passi[prev] - baseS) ? idx : prev;
+		}, 0);
+		for (let i = 0; i < passiNum; i++) {
+			var currH = (passi[i]<0)?passi[i]+360:passi[i];
+			const [r, g, b] = hsl2rgb(currH, baseS, baseL);
+			tavola.push({ r: r, g: g, b: b, h: currH, s: baseS, l: baseL });
+		}
+	}
+
+	return tavola;
+}
+
+function indContrasto(a) {
+	const lv = a >= 7 ? 4 : a >= 4.5 ? 3 : a >= 3 ? 2 : 1;
+	return `<span class="l${lv}">●</span>`;
+};
+
+function tabella(tavola) {
+	const creaCella = (dati, classe = '') => {
+		const cella = document.createElement('td');
+		if (classe) cella.className = classe;
+		if (typeof dati === 'string') {
+			cella.innerHTML = dati;
+		} else {
+			cella.appendChild(dati);
+		}
+		return cella;
+	};
+
+	const cTab = document.createElement('table');
+	cTab.className = 'tabella';
+
+	const hTab = document.createElement('thead');
+	hTab.innerHTML = `
+		<tr>
+			<th>Anteprima</th>
+			<th>Hex</th>
+			<th>HSL</th>
+			<th>Contrasto su nero</th>
+			<th>Contrasto su bianco</th>
+		</tr>
+	`;
+	cTab.appendChild(hTab);
+
+	const bTab = document.createElement('tbody');
+
+	tavola.forEach(({ r, g, b, h, s, l }) => {
+		const colore = rgb2hex(r, g, b);
+		const lum1 = contrasto(r, g, b, 0, 0, 0);
+		const lum2 = contrasto(r, g, b, 255, 255, 255);
+
+		const anteprimaDiv = document.createElement('div');
+		anteprimaDiv.className = lum1 > lum2 ? 'coloreN' : 'coloreB';
+		anteprimaDiv.style.background = colore;
+		anteprimaDiv.innerHTML = '●';
+
+		const riga = document.createElement('tr');
+		riga.appendChild(creaCella(anteprimaDiv));
+		riga.appendChild(creaCella(`${colore} ${strumenti(colore,lum1>lum2)}`));
+		riga.appendChild(creaCella(`${Math.round(h)}, ${Math.round(s * 100)}%, ${Math.round(l * 100)}%`));
+		riga.appendChild(creaCella(`${lum1}:1 ${indContrasto(lum1)}`));
+		riga.appendChild(creaCella(`${lum2}:1 ${indContrasto(lum2)}`));
+
+		bTab.appendChild(riga);
+	});
+
+	cTab.appendChild(bTab);
+	
+	return cTab;
+}
+
+function errore(a, b, c) {
+	a.className = c ? 'rosso' : 'nascosto';
+	b.className = c ? 'coloreE' : 'colore';
+}
+
+function mostraTavola() {
+	const elInput = document.getElementById('coloreA');
+	const elErrore = document.getElementById('errore1');
+	const hexColor = testColore(elInput.value.toUpperCase());
+
+	if (!hexColor) {
+		errore(elErrore, elInput, true);
+		return;
+	}
+
+	errore(elErrore, elInput, false);
+	elInput.value = hexColor;
+
+	const fisso = document.querySelector('input[name="fisso"]:checked').value;
+
+	const [r, g, b] = hex2rgb(hexColor);
+	const tavola = generaTavola(r, g, b, fisso);
+
+	if (tavola.length === 0) return;
+
+	const divTavola = document.getElementById('tavolozza');
+	divTavola.innerHTML = '';
+	divTavola.appendChild(tabella(tavola));
+
+    updateURL({ c: hexColor, s: fisso });
+}
+
+function mostraContrasto() {
+	const elInput1 = document.getElementById('coloreB1');
+	const elInput2 = document.getElementById('coloreB2');
+	const elErrore = document.getElementById('errore2');
+	const hexColor1 = testColore(elInput1.value.toUpperCase());
+	const hexColor2 = testColore(elInput2.value.toUpperCase());
+	
+	if (!hexColor1) {
+		errore(elErrore, elInput1, true);
+		return;
+	}
+	if (!hexColor2) {
+		errore(elErrore, elInput2, true);
+		return;
+	}
+
+	elInput1.value = hexColor1;
+	elInput2.value = hexColor2;
+	errore(elErrore, elInput1, false);
+	errore(elErrore, elInput2, false);
+
+	const risultati = document.getElementById('differenza');
+
+	const [r1, g1, b1] = hex2rgb(hexColor1);
+	const [r2, g2, b2] = hex2rgb(hexColor2);
+	const lum = contrasto(r1, g1, b1, r2, g2, b2);
+	const testo = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras nisi ex, ultrices quis placerat et, egestas sed lectus. Nullam faucibus lacus a mi finibus, id mattis quam auctor. In consectetur dolor vel nulla vulputate venenatis. Donec in posuere sem, eu bibendum mauris. Phasellus lobortis fermentum leo et eleifend. Duis tempus eros ut quam dapibus, non porttitor est lobortis. Integer tincidunt ante quis eros rutrum, eget congue tellus laoreet. Duis vestibulum elit est, nec euismod libero porta pretium. Sed rutrum risus diam, sit amet imperdiet odio vulputate in. Donec sed lectus ultricies augue convallis rutrum vitae eu tortor. Fusce tempor pulvinar purus, lacinia rutrum odio cursus quis. Integer laoreet iaculis maximus. Curabitur lobortis et nisi a facilisis.';
+
+	risultati.innerHTML = `<p><b>Valore ottenuto: ${lum}:1</b> ${indContrasto(lum)}</p>
+		<div class="contrasto" style="background: #${hexColor2}; color: #${hexColor1};">${testo}</div>
+		<div class="contrasto" style="background: #${hexColor1}; color: #${hexColor2};">${testo}</div>
+	`;
+
+    updateURL({ c1: hexColor1, c2: hexColor2 });
+}
+
+function mostraInfo() {
+    const hexColor = testColore(document.getElementById('coloreC').value.toUpperCase());
+    const elErrore = document.getElementById('errore0');
+    const elInput = document.getElementById('coloreC');
+    const risultati = document.getElementById('infoColore');
+
+	if (!hexColor) {
+		errore(elErrore, elInput, true);
+		return;
+	}
+	elInput.value = hexColor;
+	errore(elErrore, elInput, false);
+
+    const [xr, xg, xb] = hex2rgb(hexColor);
+    const [xh, xs, xl] = rgb2hsl(xr, xg, xb);
+
+    risultati.innerHTML = '';
+
+    const tabelleInfo = [
+        { titolo: 'Colore inserito', dati: [{ r: xr, g: xg, b: xb, h: xh, s: xs, l: xl }] },
+        { titolo: 'Con il complementare', dati: colori2(xh, xs, xl, xr, xg, xb) },
+        { titolo: 'Nella terna di colori', dati: colori3(xh, xs, xl, xr, xg, xb) },
+        { titolo: 'Nella quaterna di colori', dati: colori4(xh, xs, xl, xr, xg, xb) }
+    ];
+
+    tabelleInfo.forEach(({ titolo, dati }) => {
+        const sezione = document.createElement('div');
+        const testa = document.createElement('h4');
+        testa.textContent = titolo;
+        sezione.appendChild(testa);
+        sezione.appendChild(tabella(dati));
+        risultati.appendChild(sezione);
+    });
+
+    updateURL({ i: hexColor });
+}
+
+function colori2(h, s, l, r, g, b) {
+    const ch = (h >= 180) ? h - 180 : h + 180;
+    const [cr, cg, cb] = hsl2rgb(ch, s, l);
+    return [
+        { r, g, b, h, s, l },
+        { r: cr, g: cg, b: cb, h: ch, s, l }
+    ];
+}
+
+function colori3(h, s, l, r, g, b) {
+    const t1h = (h >= 240) ? h - 240 : h + 120;
+    const t2h = (h >= 120) ? h - 120 : h + 240;
+    const [t1r, t1g, t1b] = hsl2rgb(t1h, s, l);
+    const [t2r, t2g, t2b] = hsl2rgb(t2h, s, l);
+    return [
+        { r, g, b, h, s, l },
+        { r: t1r, g: t1g, b: t1b, h: t1h, s, l },
+        { r: t2r, g: t2g, b: t2b, h: t2h, s, l }
+    ];
+}
+
+function colori4(h, s, l, r, g, b) {
+    const q1h = (h >= 270) ? h - 270 : h + 90;
+    const q2h = (h >= 180) ? h - 180 : h + 180;
+    const q3h = (h >= 90) ? h - 90 : h + 270;
+    const [q1r, q1g, q1b] = hsl2rgb(q1h, s, l);
+    const [q2r, q2g, q2b] = hsl2rgb(q2h, s, l);
+    const [q3r, q3g, q3b] = hsl2rgb(q3h, s, l);
+    return [
+        { r, g, b, h, s, l },
+        { r: q1r, g: q1g, b: q1b, h: q1h, s, l },
+        { r: q2r, g: q2g, b: q2b, h: q2h, s, l },
+        { r: q3r, g: q3g, b: q3b, h: q3h, s, l }
+    ];
+}
+
+function updateURL(params) {
+    const urlParams = new URLSearchParams(window.location.search);
+    ['i','c', 's', 'c1', 's2'].forEach(p => urlParams.delete(p));
+    Object.keys(params).forEach(key => urlParams.set(key, params[key]));
+
+    const newUrl = `${window.location.pathname}?${urlParams.toString()}`;
+    window.history.pushState({}, '', newUrl);
+}
+
+function daURL() {
+    const urlParams = new URLSearchParams(window.location.search);
+
+    const params = {
+        i: testColore(urlParams.get('i')),
+        c: testColore(urlParams.get('c')),
+        s: urlParams.get('s'),
+        c1: testColore(urlParams.get('c1')),
+        c2: testColore(urlParams.get('c2')),
+    };
+
+    if (params.i) {
+        document.getElementById('coloreC').value = params.i;
+        mostraInfo();
+        attivaTab('t1');
+    } else if (params.c) {
+        document.getElementById('coloreA').value = params.c;
+		if (params.s) {
+			document.getElementById('fisso'+params.s).checked = true;
+		}
+        mostraTavola();
+        attivaTab('t2');
+    } else if (params.c1 && params.c2) {
+        document.getElementById('coloreB1').value = params.c1;
+        document.getElementById('coloreB2').value = params.c2;
+        mostraContrasto();
+        attivaTab('t3');
+    }
+}
+
+function attivaTab(tabId) {
+    const tabElement = document.querySelector(`.tab[data-tab="${tabId}"]`);
+    const contentElement = document.getElementById(tabId);
+
+    if (tabElement && contentElement) {
+        // Rimuovere le classi attive da tutte le schede e i contenuti
+        document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+        document.querySelectorAll('.tab-content > div').forEach(content => content.classList.remove('active'));
+
+        // Attivare la scheda e il contenuto corrispondenti
+        tabElement.classList.add('active');
+        contentElement.classList.add('active');
+    }
+}
+
+window.onload = daURL;
+
+document.getElementById('coloreA').addEventListener("keydown", function (e) {
+	if (e.code === "Enter") {
+		mostraTavola();
+	}
+});
+
+document.querySelectorAll('.tab').forEach(tab => {
+	tab.addEventListener('click', function() {
+		document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+		document.querySelectorAll('.tab-content > div').forEach(content => content.classList.remove('active'));
+		this.classList.add('active');
+		document.getElementById(this.dataset.tab).classList.add('active');
+		let qq = this.getAttribute('data-tab').substring(2,1);
+	});
+});
+	</script>
+</body>
+</html>
