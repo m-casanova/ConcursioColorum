@@ -157,7 +157,7 @@ span.l1 { color: #c00000; }
 					<div id="t3">
 						<h2>Calcola contrasto tra due colori</h2>
 						<p># <input type="text" value="FFFFFF" id="coloreB1" class="colore" placeholder="colore"> <label for="coloreB1">← Primo colore in formato esadecimale</label></p>
-						<p># <input type="text" value="0051A2" id="coloreB2" class="colore" placeholder="colore"> <label for="coloreB2">←Secondo colore in formato esadecimale</label></p>
+						<p># <input type="text" value="0051A2" id="coloreB2" class="colore" placeholder="colore"> <label for="coloreB2">← Secondo colore in formato esadecimale</label></p>
 						<p><button class="esegui" onclick="mostraContrasto()">Mostra contrasto</button></p>
 						<p id="errore2" class="nascosto">Attenzione: Uno dei colori inseriti non è valido!</p>
 						<div id="differenza"></div>
@@ -597,11 +597,27 @@ function attivaTab(tabId) {
 
 window.onload = daURL;
 
+document.getElementById('coloreC').addEventListener("keydown", function (e) {
+	if (e.code === "Enter") {
+		mostraInfo();
+	}
+});
 document.getElementById('coloreA').addEventListener("keydown", function (e) {
 	if (e.code === "Enter") {
 		mostraTavola();
 	}
 });
+document.getElementById('coloreB1').addEventListener("keydown", function (e) {
+	if (e.code === "Enter") {
+		mostraContrasto();
+	}
+});
+document.getElementById('coloreB2').addEventListener("keydown", function (e) {
+	if (e.code === "Enter") {
+		mostraContrasto();
+	}
+});
+
 
 document.querySelectorAll('.tab').forEach(tab => {
 	tab.addEventListener('click', function() {
