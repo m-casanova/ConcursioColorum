@@ -57,8 +57,8 @@ p.info { font-weight: 450; margin: 0 10px; font-size: 18px; color: var(--n2)}
 #errore { color: white; background-color: var(--b4); padding: 10px; margin: 20px 20px; }
 #errore.nascosto { display: none; }
 
-p.contrasto { margin: 10px }
-p.contrasto span { padding: 3px 8px; border-radius: 10px }
+div.contrasto { margin: 20px 10px; line-height: 2em }
+span.cc { padding: 3px 8px; border-radius: 10px }
 
 #hDiv, #slDiv, #colorato { position: relative; display: inline-block; margin: 0px 5px; padding: 0; }
 canvas { border: 1px solid #ccc; margin: 0; cursor: crosshair }
@@ -67,9 +67,11 @@ canvas { border: 1px solid #ccc; margin: 0; cursor: crosshair }
 #hPunto { left: 50%; }
 
 .gruppo { margin: 0px 10px; }
-.gruppo input { border: 2px solid #fff; border-bottom: 2px solid #ccc; font-family: "test"; font-size: 14pt; color: #444 }
 .gruppo input:focus { outline: none; }
 .gruppo input.invalid { border-color: var(--b4); }
+input.hex, input.num { border: 2px solid #fff; border-bottom: 2px solid #ccc; font-family: "test"; font-size: 14pt; color: #444 }
+input.hex { width: 120px; text-align: center; text-transform: uppercase; }
+input.num { text-align: center }
 
 h4 .copia { cursor:pointer; font-weight: 400 }
 
@@ -117,19 +119,22 @@ h4 .copia { cursor:pointer; font-weight: 400 }
 				</div>
 				<div class="gruppo">
 					<label for="hex">Colore (Hex): #</label>
-					<input type="text" id="hex" value="0066cc">
+					<input type="text" id="hex" class="hex" value="0066cc">
 				</div>
 				<div class="gruppo">
 					<label for="rgb">RGB: </label>
-					<input type="number" id="r" min="0" max="255" placeholder="R">
-					<input type="number" id="g" min="0" max="255" placeholder="G">
-					<input type="number" id="b" min="0" max="255" placeholder="B">
+					<input type="number" id="r" min="0" max="255" class="num" placeholder="R">
+					<input type="number" id="g" min="0" max="255" class="num" placeholder="G">
+					<input type="number" id="b" min="0" max="255" class="num" placeholder="B">
 				</div>
 				<div class="gruppo">
 					<label for="hsl">HSL: </label>
-					<input type="number" id="h" min="0" max="360" placeholder="Hue">
-					<input type="number" id="s" min="0" max="100" placeholder="Saturation">
-					<input type="number" id="l" min="0" max="100" placeholder="Lightness">
+					<input type="number" id="h" min="0" max="359" class="num" placeholder="Hue">
+					<input type="number" id="s" min="0" max="100" class="num" placeholder="Saturation">
+					<input type="number" id="l" min="0" max="100" class="num" placeholder="Lightness">
+				</div>
+				<div class="contrasto">
+					Con # <input type="text" class="hex" id="hex2" value="ffffff"> si ha un contrasto di <span id="contra"></span>
 				</div>
 				<div class="nascosto" id="errore">Valore non valido!</div>
 				<div id="risultati">
@@ -146,11 +151,13 @@ h4 .copia { cursor:pointer; font-weight: 400 }
 	<script>
 const errorDiv = document.getElementById('errore');
 const hexInput = document.getElementById('hex');
+const hex2Input = document.getElementById('hex2');
 const rgbInput = { r: document.getElementById('r'), g: document.getElementById('g'), b: document.getElementById('b') };
 const hslInput = { h: document.getElementById('h'), s: document.getElementById('s'), l: document.getElementById('l') };
 const hCanvas = document.getElementById('hCanvas');
 const slCanvas = document.getElementById('slCanvas');
 const colorato = document.getElementById('colorato');
+const contra = document.getElementById('contra');
 const tavolozza = [
 	{ t:'Complementare', v: [0,180], p: 'Angolo opposto per tinta (H)' },
 	{ t:'Triadici', v: [0,120,240], p: 'Tre posizioni equidistanti su circonferenza variando la tinta (H)' },
@@ -287,7 +294,11 @@ function disegna_sl(hue) {
 	ctx.putImageData(imgData, 0, 0);
 }
 
-function aggiornaC(hex) {
+function aggiornaC(hex, hex2) {
+	if (hex2) {
+		hex2Input.value = hex2;
+		aggiorna('hex2');
+	}
 	hexInput.value = hex;
 	aggiorna('hex');
 }
@@ -320,12 +331,14 @@ function sColore(h, s, l, t, p) {
 }
 
 function aggiorna(dati) {
-	var hex, rgb, hsl;
+	var hex, hex2, rgb, rgb2, hsl;
 	if (dati == 'hex') {
 		hex = hexInput.value;
 		rgb = hex2rgb(hex);
-		if (!rgb) { mostraErrore(hexInput);	return;	}
+		if (!rgb) { mostraErrore(hexInput); return;	}
 		hsl = rgb2hsl(rgb.r, rgb.g, rgb.b);
+		hex2 = hex2Input.value;
+		rgb2 = hex2rgb(hex2);
 	} else if (dati == 'rgb') {
 		const r = parseInt(rgbInput.r.value, 10);
 		const g = parseInt(rgbInput.g.value, 10);
@@ -336,6 +349,8 @@ function aggiorna(dati) {
 		rgb = { r, g, b };
 		hex = rgb2hex(r, g, b);
 		hsl = rgb2hsl(r, g, b);
+		hex2 = hex2Input.value;
+		rgb2 = hex2rgb(hex2);
 	} else if (dati == 'hsl') {
 		const h = parseInt(hslInput.h.value, 10) % 360;
 		const s = parseInt(hslInput.s.value, 10);
@@ -346,34 +361,37 @@ function aggiorna(dati) {
 		hsl = { h, s, l };
 		rgb = hsl2rgb(h, s, l);
 		hex = rgb2hex(rgb.r, rgb.g, rgb.b);
+		hex2 = hex2Input.value;
+		rgb2 = hex2rgb(hex2);
+	} else if (dati = 'hex2') {
+		hex = hexInput.value;
+		rgb = hex2rgb(hex);
+		hex2 = hex2Input.value;
+		rgb2 = hex2rgb(hex2);
+		if (!rgb2) { mostraErrore(hex2Input); return; }
+		hsl = rgb2hsl(rgb.r, rgb.g, rgb.b);
 	}
+
 	nascondiErrore();
 	hexInput.value = hex;
+	hex2Input.value = hex2;
 	rgbInput.r.value = rgb.r;
 	rgbInput.g.value = rgb.g;
 	rgbInput.b.value = rgb.b;
 	hslInput.h.value = hsl.h;
 	hslInput.s.value = hsl.s;
 	hslInput.l.value = hsl.l;
+	
+	const contrC = contrasto(rgb, rgb2);
+	contra.innerHTML = `<b>${contrC.c}:1</b> (${contrC.t})<br/><span class="cc" style="background:#${hex};color:#${hex2}">Aa</span> <span class="cc" style="background:#${hex2};color:#${hex}">Aa</span>`;
 
 	aggPunti(hsl.h, hsl.s, hsl.l);
 	colorato.style.background = `#${hex}`;
 	disegna_sl(hsl.h);
 
-    const risultati = document.getElementById('risultati');
+	const risultati = document.getElementById('risultati');
 
-    risultati.innerHTML = '';
-	
-	const contrC = [
-		{ n: 'bianco', c: '#fff', v: contrasto(rgb, { r: 255, g: 255, b: 255}) },
-		{ n: 'nero', c: '#000', v: contrasto(rgb, { r: 0, g: 0, b: 0}) }
-	];
-	contrC.forEach((a) => {
-        const rigaT = document.createElement('p');
-        rigaT.className = 'contrasto';
-        rigaT.innerHTML = `<span style="background:#${hex};color:${a.c}">Lorem ipsum</span> <span style="background:${a.c};color:#${hex}">Lorem ipsum</span> Contrasto: <b>${a.v.c}:1</b> (${a.v.t})`;
-        risultati.appendChild(rigaT);
-	});
+	risultati.innerHTML = '';
 
 	for (const [k, vs] of Object.entries(tavolozza)) {
 		if (k == 4) {
@@ -505,7 +523,7 @@ function aggiorna(dati) {
 		}
 
 	}
-    aggiornaURL({ c: hex });
+	aggiornaURL({ c: hex.toUpperCase(), c2: hex2.toUpperCase()});
 }
 
 function aggPunti(h, s, l) {
@@ -541,27 +559,29 @@ slCanvas.addEventListener('click', (e) => {
 });
 
 function aggiornaURL(params) {
-    const urlParams = new URLSearchParams(window.location.search);
-    ['c'].forEach(p => urlParams.delete(p));
-    Object.keys(params).forEach(key => urlParams.set(key, params[key]));
+	const urlParams = new URLSearchParams(window.location.search);
+	['c', 'c2'].forEach(p => urlParams.delete(p));
+	Object.keys(params).forEach(key => urlParams.set(key, params[key]));
 
-    const newUrl = `${window.location.pathname}?${urlParams.toString()}`;
-    window.history.pushState({}, '', newUrl);
+	const newUrl = `${window.location.pathname}?${urlParams.toString()}`;
+	window.history.pushState({}, '', newUrl);
 }
 
 function daURL() {
-    const urlParams = new URLSearchParams(window.location.search);
+	const urlParams = new URLSearchParams(window.location.search);
 
-    const params = {
-        c: testColore(urlParams.get('c')),
-    };
+	const params = {
+		c: testColore(urlParams.get('c')),
+		c2: testColore(urlParams.get('c2')),
+	};
 
-    if (params.c) {
-        aggiornaC(params.c);
-    }
+	if (params.c) {
+		aggiornaC(params.c, params.c2);
+	}
 }
 
 hexInput.addEventListener('input', (e) => { aggiorna('hex'); });
+hex2Input.addEventListener('input', (e) => { aggiorna('hex2'); });
 rgbInput.r.addEventListener('input', (e) => { aggiorna('rgb'); });
 rgbInput.g.addEventListener('input', (e) => { aggiorna('rgb'); });
 rgbInput.b.addEventListener('input', (e) => { aggiorna('rgb'); });
