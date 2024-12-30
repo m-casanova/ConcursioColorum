@@ -10,6 +10,7 @@
  --b0:#fff; --b1:#332925; --b2:#006644; --b3:#b36b00; --b4:#b32d43;
  --c0:#003366; --c1:#004080; --c2:#004d99; --c3:#0066cc; --c4:#207ad5; --c5:#4392E0; --c6:#6aaaeb; --c7:#94c4f5; --c8:#bfdfff; --c9:#f2f7fc;
  --n0:#17324d; --n1:#2f475e; --n2:#455b71; --n3:#5c6f82; --n4:#768594; --n5:#929da9; --n6:#a3adb7; --n7:#c5c7c9; --n8:#d9dadb; --n9:#ebeced;
+ --v0:#003366; --v1:#004080;
 }
 html, body { height: 100% }
 body { font-family:'test', sans-serif; font-size:16pt; margin:0; padding:0; background: var(--b0) }
@@ -19,8 +20,8 @@ header { width: 100%; margin:0; padding:0 }
 header a { color: var(--b0) }
 header a.b { color: var(--b0); text-decoration: none }
 header > div { color: var(--b0); width:100%; }
-header > div.info { background: var(--c2); }
-header > div.titolo { background: var(--c3); }
+header > div.info { background: var(--c1); }
+header > div.titolo { background: var(--c2); }
 header > div > div { width: 1180px; margin: 0px auto; padding:0 }
 header div div p { margin:0; padding:10px; font-size: 12pt }
 header div div h1 { margin:0; padding:30px 10px; font-size: 40px; line-height: 1em; font-weight: 350; color: var(--b0); }
@@ -40,8 +41,8 @@ footer p { margin: 0 10px; font-size: 18px }
 footer a { color: var(--b0); font-weight: 450; }
 
 h2 { margin:30px 10px;padding:0; font-size: 32px; line-height: 1em; font-weight: 400; color: var(--c2) }
-h3 { margin:30px 10px 0px; padding: 0; color: var(--c2); font-size: 28px; font-weight: 600; }
-h4 { margin:20px 10px 5px; padding: 0; color: var(--c2); font-size: 24px; font-weight: 600; }
+h3 { margin:30px 10px 0px; padding: 0; color: var(--c1); font-size: 28px; font-weight: 600; }
+h4 { margin:20px 10px 5px; padding: 0; color: var(--c1); font-size: 24px; font-weight: 600; }
 p.info { font-weight: 450; margin: 0 10px; font-size: 18px; color: var(--n2)}
 
 .wrapper { min-height: 100%; display: grid; grid-template-rows: auto 1fr auto; }
@@ -61,8 +62,15 @@ div.contrasto { margin: 20px 10px; line-height: 2em }
 span.cc { padding: 3px 8px; border-radius: 10px }
 
 #hDiv, #slDiv, #colorato { position: relative; display: inline-block; margin: 0px 5px; padding: 0; }
-canvas { border: 1px solid #ccc; margin: 0; cursor: crosshair }
-#colorato { width: 100px; height: 200px; border: 1px solid #ccc; margin: 0px 5px; }
+
+canvas { border: 1px solid #ccc; margin: 0; cursor: crosshair; vertical-align: middle }
+
+#colorato { width: 100px; height: 200px; border: 1px solid #ccc; margin: 0px 5px; padding: 0; vertical-align: middle; position: relative; text-align:center; background: var(--v0) }
+#colorato p { position: absolute; left: 50%; top: 50%; transform: translateY(-50%) translateX(-50%); margin: 0; padding: 0; line-height: 2em }
+#colorato p span { padding: 3px 9px; border-radius: 10px }
+#colA { color: var(--v1) }
+#colB { background: var(--v1); color: var(--v0) }
+
 #hPunto, #slPunto { position: absolute; width: 8px; height: 8px; background: white; border: 2px solid #000; border-radius: 50%; pointer-events: none; transform: translate(-50%, -50%); }
 #hPunto { left: 50%; }
 
@@ -77,10 +85,10 @@ h4 .copia { cursor:pointer; font-weight: 400 }
 
 #risultati { margin: 25px 0; }
 #risultati .riga { margin: 0 10px; }
-#risultati .riga div { display: inline-block; position: relative; width: 30px; height: 30px; margin: 0 3px; padding: 0; border-radius: 50%; cursor: pointer; border: 1px solid #888; vertical-align: middle }
+#risultati .riga div { display: inline-block; position: relative; width: 30px; height: 30px; margin: 0 3px; padding: 0; cursor: pointer; border: 1px solid #888; vertical-align: middle }
 #risultati .riga div:hover { width: 36px; height: 36px; }
 #risultati .riga div.curr { width: 40px; height: 40px; cursor: default }
-#risultati .riga div span { visibility: hidden; padding: 5px 10px; border-radius: 6px; position: absolute; z-index: 1; top: 30px; left: 0 }
+#risultati .riga div span { visibility: hidden; padding: 5px 10px; border-radius: 6px; position: absolute; z-index: 1; top: 40px; left: 0 }
 #risultati .riga div:hover span { visibility: visible; }
 </style>
 </head>
@@ -89,7 +97,7 @@ h4 .copia { cursor:pointer; font-weight: 400 }
 		<header>
 			<div class="info">
 				<div>
-					<p><a href="https://github.com/m-casanova/ConcursioColorum/"> GitHub</a></p>
+					<p><a class="b" href="https://github.com/m-casanova/ConcursioColorum/"> GitHub</a></p>
 				</div>
 			</div>
 			<div class="titolo">
@@ -115,7 +123,7 @@ h4 .copia { cursor:pointer; font-weight: 400 }
 						<div id="slPunto"></div>
 						<canvas id="slCanvas" width="200" height="200"></canvas>
 					</div>
-					<div id="colorato"></div>
+					<div id="colorato"><p><span id="colA">AaBb</span><br/><span id="colB">AaBb</span></p></div>
 				</div>
 				<div class="gruppo">
 					<label for="hex">Colore (Hex): #</label>
@@ -158,6 +166,9 @@ const hCanvas = document.getElementById('hCanvas');
 const slCanvas = document.getElementById('slCanvas');
 const colorato = document.getElementById('colorato');
 const contra = document.getElementById('contra');
+const contra1 = document.getElementById('colA');
+const contra2 = document.getElementById('colB');
+var droot = document.querySelector(':root');
 const tavolozza = [
 	{ t:'Complementare', v: [0,180], p: 'Angolo opposto per tinta (H)' },
 	{ t:'Triadici', v: [0,120,240], p: 'Tre posizioni equidistanti su circonferenza variando la tinta (H)' },
@@ -282,24 +293,13 @@ function disegna_sl(hue) {
 
 	for (let x = 0; x < width; x++) {
 		for (let y = 0; y < height; y++) {
-			const slX = x / width;
-			const slY = y / height;
+			const ds = x / width;
+			const dv = 1 - y / height;
 
-			let s, l;
-			if (slX == slY) {
-				s = 50;
-				l = (1 - slY)*100;
-			} else if (slX+slY <= 1) {
-				const slD = slX + slY;
-				s = 100 * slX / slD;
-				l = 50 * (2 - slX - slY);
-			} else {
-				const slD = 2 - slX - slY;
-				s = 100 * (1 - slY)/ slD;
-				l = 50 * (2 - slX - slY);
-			}
-
-			const rgb = hsl2rgb(hue, s, l);
+			let l = dv * (1 - ds/2);
+			let s = (l == 0 || l == 1)? 0 : (dv - l)/Math.min(l,1-l);
+			
+			const rgb = hsl2rgb(hue, s*100, l*100);
 
 			const index = (y * width + x) * 4;
 			imgData.data[index] = rgb.r;
@@ -401,10 +401,11 @@ function aggiorna(dati) {
 	hslInput.l.value = hsl.l;
 
 	const contrC = contrasto(rgb, rgb2);
-	contra.innerHTML = `<b>${contrC.c}:1</b> (${contrC.t})<br/><span class="cc" style="background:#${hex};color:#${hex2}">Aa</span> <span class="cc" style="background:#${hex2};color:#${hex}">Aa</span>`;
+	contra.innerHTML = `<b>${contrC.c}:1</b> (${contrC.t})`;
 
 	aggPunti(hsl.h, hsl.s, hsl.l);
-	colorato.style.background = `#${hex}`;
+	droot.style.setProperty('--v0', `#${hex}`);
+	droot.style.setProperty('--v1', `#${hex2}`);
 	disegna_sl(hsl.h);
 
 	const risultati = document.getElementById('risultati');
@@ -511,6 +512,9 @@ function aggiorna(dati) {
 					}
 				}
 				riga.appendChild(sColore (hsl.h, currS, currL, i==vicino, 6));
+
+				const rgbroot = hsl2rgb(hsl.h, currS, currL);
+				droot.style.setProperty(('--c'+i), `#${rgb2hex(rgbroot.r,rgbroot.g,rgbroot.b)}`);
 			}
 			risultati.appendChild(riga);
 
@@ -551,15 +555,14 @@ function aggPunti(h, s, l) {
 	const hY = (h / 359) * hCanvas.height;
 	hPunto.style.top = `${hY}px`;
 
-	var slY = 2 - l/50;
-	var slX = 0;
-	var slD = slY;
-	if (slY > 1) { slX = slY-1; slD = 2 - slY; slY = 1;  }
-	slX += slD*s/100;
-	slY -= slD*s/100;
+	var ds = s/100;
+	var dl = l/100;
+	let dv = dl + ds * Math.min(dl, 1 - dl);
+	let dX = (dv == 0)? 0 : 2*(1-dl/dv);
+	let dY = (1-dv);
 
-	slPunto.style.left = `${slX * slCanvas.width}px`;
-	slPunto.style.top = `${slY * slCanvas.height}px`;
+	slPunto.style.left = `${dX * slCanvas.width}px`;
+	slPunto.style.top = `${dY * slCanvas.height}px`;
 }
 
 hCanvas.addEventListener('click', (e) => {
@@ -575,25 +578,14 @@ slCanvas.addEventListener('click', (e) => {
 	const x = e.clientX - rect.left;
 	const y = e.clientY - rect.top;
 
-	const slX = x / slCanvas.width;
-	const slY = y / slCanvas.height;
+	const ds = x / slCanvas.width;
+	const dv = 1 - y / slCanvas.height;
 
-	let s, l;
-	if (slX == slY) {
-		s = 50;
-		l = (1 - slY)*100;
-	} else if (slX+slY <= 1) {
-		const slD = slX + slY;
-		s = 100 * slX / slD;
-		l = 50 * (2 - slX - slY);
-	} else {
-		const slD = 2 - slX - slY;
-		s = 100 * (1 - slY)/ slD;
-		l = 50 * (2 - slX - slY);
-	}
-
-	hslInput.s.value = Math.round(s);
-	hslInput.l.value = Math.round(l);
+	let l = dv * (1 - ds/2);
+	let s = (l == 0 || l == 1)? 0 : (dv - l)/Math.min(l,1-l);
+	
+	hslInput.s.value = Math.round(100*s);
+	hslInput.l.value = Math.round(100*l);
 	aggiorna('hsl');
 });
 
