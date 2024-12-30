@@ -247,9 +247,9 @@ function contrasto(a, b) {
 	}
 	const L1 = Lum(a), L2 = Lum(b);
 	const Lmax = Math.max(L1, L2), Lmin = Math.min(L1, L2);
-	
+
 	const t = Math.floor( 100*(Lmax+0.05)/(Lmin+0.05) ) / 100;
-	const val = (t>=7)?'ottimo':(t>=4.5)?'buono':(t>=3)?'accettabile':'da evitare';
+	const val = (t>=7)?'ottimo':(t>=4.5)?'buono':(t>=3)?'accettabile, solo per testi grandi > 24px':'da evitare';
 	return { c: t, t: val };
 }
 
@@ -279,11 +279,28 @@ function disegna_sl(hue) {
 	const width = slCanvas.width;
 	const height = slCanvas.height;
 	const imgData = ctx.createImageData(width, height);
+
 	for (let x = 0; x < width; x++) {
 		for (let y = 0; y < height; y++) {
-			const s = (x / width) * 100;
-			const l = 100 - (y / height) * 100;
+			const slX = x / width;
+			const slY = y / height;
+
+			let s, l;
+			if (slX == slY) {
+				s = 50;
+				l = (1 - slY)*100;
+			} else if (slX+slY <= 1) {
+				const slD = slX + slY;
+				s = 100 * slX / slD;
+				l = 50 * (2 - slX - slY);
+			} else {
+				const slD = 2 - slX - slY;
+				s = 100 * (1 - slY)/ slD;
+				l = 50 * (2 - slX - slY);
+			}
+
 			const rgb = hsl2rgb(hue, s, l);
+
 			const index = (y * width + x) * 4;
 			imgData.data[index] = rgb.r;
 			imgData.data[index + 1] = rgb.g;
@@ -291,6 +308,7 @@ function disegna_sl(hue) {
 			imgData.data[index + 3] = 255;
 		}
 	}
+
 	ctx.putImageData(imgData, 0, 0);
 }
 
@@ -381,7 +399,7 @@ function aggiorna(dati) {
 	hslInput.h.value = hsl.h;
 	hslInput.s.value = hsl.s;
 	hslInput.l.value = hsl.l;
-	
+
 	const contrC = contrasto(rgb, rgb2);
 	contra.innerHTML = `<b>${contrC.c}:1</b> (${contrC.t})<br/><span class="cc" style="background:#${hex};color:#${hex2}">Aa</span> <span class="cc" style="background:#${hex2};color:#${hex}">Aa</span>`;
 
@@ -447,7 +465,7 @@ function aggiorna(dati) {
 				riga.appendChild(sColore (hsl.h, hsl.s, currL, i==vicino, 5));
 			}
 			risultati.appendChild(riga);
-			
+
 			const rigaP = document.createElement('p');
 			rigaP.textContent = vs.p;
 			risultati.appendChild(rigaP);
@@ -495,14 +513,14 @@ function aggiorna(dati) {
 				riga.appendChild(sColore (hsl.h, currS, currL, i==vicino, 6));
 			}
 			risultati.appendChild(riga);
-			
+
 			const rigaP = document.createElement('p');
 			rigaP.textContent = vs.p;
 			risultati.appendChild(rigaP);
 
 		} else {
 			pal[k] = null;
-			if (hsl.s > 0 && hsl.l > 0) {
+			if (hsl.s > 0 && hsl.l > 0 && hsl.l < 100) {
 				const rigaT = document.createElement('h4');
 				rigaT.innerHTML = `${vs.t} <span title="Copia negli appunti" class='copia' onclick="navigator.clipboard.writeText(JSON.stringify(pal[${k}]))"></span>`;
 				risultati.appendChild(rigaT);
@@ -530,13 +548,18 @@ function aggPunti(h, s, l) {
 	const hPunto = document.getElementById('hPunto');
 	const slPunto = document.getElementById('slPunto');
 
-	const hueY = (h / 360) * hCanvas.height;
-	hPunto.style.top = `${hueY}px`;
+	const hY = (h / 359) * hCanvas.height;
+	hPunto.style.top = `${hY}px`;
 
-	const satX = (s / 100) * slCanvas.width;
-	const lumY = ((100 - l) / 100) * slCanvas.height;
-	slPunto.style.left = `${satX}px`;
-	slPunto.style.top = `${lumY}px`;
+	var slY = 2 - l/50;
+	var slX = 0;
+	var slD = slY;
+	if (slY > 1) { slX = slY-1; slD = 2 - slY; slY = 1;  }
+	slX += slD*s/100;
+	slY -= slD*s/100;
+
+	slPunto.style.left = `${slX * slCanvas.width}px`;
+	slPunto.style.top = `${slY * slCanvas.height}px`;
 }
 
 hCanvas.addEventListener('click', (e) => {
@@ -551,8 +574,24 @@ slCanvas.addEventListener('click', (e) => {
 	const rect = slCanvas.getBoundingClientRect();
 	const x = e.clientX - rect.left;
 	const y = e.clientY - rect.top;
-	const s = (x / slCanvas.width) * 100;
-	const l = 100 - (y / slCanvas.height) * 100;
+
+	const slX = x / slCanvas.width;
+	const slY = y / slCanvas.height;
+
+	let s, l;
+	if (slX == slY) {
+		s = 50;
+		l = (1 - slY)*100;
+	} else if (slX+slY <= 1) {
+		const slD = slX + slY;
+		s = 100 * slX / slD;
+		l = 50 * (2 - slX - slY);
+	} else {
+		const slD = 2 - slX - slY;
+		s = 100 * (1 - slY)/ slD;
+		l = 50 * (2 - slX - slY);
+	}
+
 	hslInput.s.value = Math.round(s);
 	hslInput.l.value = Math.round(l);
 	aggiorna('hsl');
