@@ -258,8 +258,8 @@ function hsv2hsl({h, s, v}) {
 	const sl = l === 0 || l === 1 ? 0 : (v - l) / Math.min(l, 1 - l);
 	return {
 		h,
-		s: Math.round(sl * 100),
-		l: Math.round(l * 100)
+		s: Math.min(100, Math.round(sl * 100)),
+		l: Math.min(100,Math.round(l * 100))
 	};
 }
 
@@ -584,14 +584,17 @@ slCanvas.addEventListener('click', (e) => {
 	const x = e.clientX - rect.left;
 	const y = e.clientY - rect.top;
 
-	const ds = x / slCanvas.width;
-	const dv = 1 - y / slCanvas.height;
+	const ds = 100*(x / slCanvas.width);
+	const dv = 100*(1 - y / slCanvas.height);
 
-	let l = dv * (1 - ds/2);
-	let s = (l == 0 || l == 1)? 0 : (dv - l)/Math.min(l,1-l);
+	console.log(ds,dv);
+
+	const hsl = hsv2hsl({h:180,s:ds,v:dv});
+
+	console.log(hsl);
 	
-	hslInput.s.value = Math.round(100*s);
-	hslInput.l.value = Math.round(100*l);
+	hslInput.s.value = hsl.s;
+	hslInput.l.value = hsl.l;
 	aggiorna('hsl');
 });
 
