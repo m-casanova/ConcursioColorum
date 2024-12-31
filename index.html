@@ -12,21 +12,19 @@
  --n0:#17324d; --n1:#2f475e; --n2:#455b71; --n3:#5c6f82; --n4:#768594; --n5:#929da9; --n6:#a3adb7; --n7:#c5c7c9; --n8:#d9dadb; --n9:#ebeced;
  --v0:#003366; --v1:#004080;
 }
-html, body { height: 100% }
-body { font-family:'test', sans-serif; font-size:16pt; margin:0; padding:0; background: var(--b0) }
-div { margin:0; padding:0; }
+html, body { height: 100%; margin:0; padding:0; font-family:'test', sans-serif; font-size:16pt; background: var(--b0) }
 
-header { width: 100%; margin:0; padding:0 }
+header { width: 100%; }
 header a { color: var(--b0) }
-header a.b { color: var(--b0); text-decoration: none }
-header > div { color: var(--b0); width:100%; }
+header a.b { text-decoration: none }
+header > div { width:100%; color: var(--b0); }
 header > div.info { background: var(--c1); }
 header > div.titolo { background: var(--c2); }
 header > div > div { width: 1180px; margin: 0px auto; padding:0 }
 header div div p { margin:0; padding:10px; font-size: 12pt }
 header div div h1 { margin:0; padding:30px 10px; font-size: 40px; line-height: 1em; font-weight: 350; color: var(--b0); }
 
-main { width: 1180px; margin:40px auto 60px; padding:0 }
+main { width: 1180px; margin:40px auto 60px; }
 
 div.side { width: 249px; margin: 30px 0 0; padding:10px 10px 5px; float:left; border-right:1px solid var(--n7); color: var(--b1); }
 div.side p { font-size: 14pt }
@@ -68,7 +66,8 @@ canvas { border: 1px solid #ccc; margin: 0; cursor: crosshair; vertical-align: m
 #colorato { width: 100px; height: 200px; border: 1px solid #ccc; margin: 0px 5px; padding: 0; vertical-align: middle; position: relative; text-align:center; background: var(--v0) }
 #colorato p { position: absolute; left: 50%; top: 50%; transform: translateY(-50%) translateX(-50%); margin: 0; padding: 0; line-height: 2em }
 #colorato p span { padding: 3px 9px; border-radius: 10px }
-#colA { color: var(--v1) }
+#colV, #colA { color: var(--v1) }
+#colV { font-size: 24pt; font-weight: 300 }
 #colB { background: var(--v1); color: var(--v0) }
 
 #hPunto, #slPunto { position: absolute; width: 8px; height: 8px; background: white; border: 2px solid #000; border-radius: 50%; pointer-events: none; transform: translate(-50%, -50%); }
@@ -81,6 +80,9 @@ input.hex, input.num { border: 2px solid #fff; border-bottom: 2px solid #ccc; fo
 input.hex { width: 120px; text-align: center; text-transform: uppercase; }
 input.num { text-align: center }
 
+.vis0:before { content: ''; }
+.vis1:before { content: ''; }
+
 h4 .copia { cursor:pointer; font-weight: 400 }
 
 #risultati { margin: 25px 0; }
@@ -88,8 +90,7 @@ h4 .copia { cursor:pointer; font-weight: 400 }
 #risultati .riga div { display: inline-block; position: relative; width: 30px; height: 30px; margin: 0 3px; padding: 0; cursor: pointer; border: 1px solid #888; vertical-align: middle }
 #risultati .riga div:hover { width: 36px; height: 36px; }
 #risultati .riga div.curr { width: 40px; height: 40px; cursor: default }
-#risultati .riga div span { visibility: hidden; padding: 5px 10px; border-radius: 6px; position: absolute; z-index: 1; top: 30px; left: 0; box-shadow: 3px 3px 3px rgba(0,0,0,0.3);
- }
+#risultati .riga div span { visibility: hidden; position: absolute; z-index: 1; top: 30px; left: 0; padding: 5px 10px; border-radius: 6px; box-shadow: 3px 3px 3px rgba(0,0,0,0.3); font-size: 14pt; font-weight: 450 }
 #risultati .riga div:hover span { visibility: visible; }
 </style>
 </head>
@@ -124,7 +125,7 @@ h4 .copia { cursor:pointer; font-weight: 400 }
 						<div id="slPunto"></div>
 						<canvas id="slCanvas" width="200" height="200"></canvas>
 					</div>
-					<div id="colorato"><p><span id="colA">AaBb</span><br/><span id="colB">AaBb</span></p></div>
+					<div id="colorato"><p><span id="colV" class="vis0"></span><br/><span id="colA">AaBb</span><br/><span id="colB">AaBb</span></p></div>
 				</div>
 				<div class="gruppo">
 					<label for="hex">Colore (Hex): #</label>
@@ -167,18 +168,17 @@ const hCanvas = document.getElementById('hCanvas');
 const slCanvas = document.getElementById('slCanvas');
 const colorato = document.getElementById('colorato');
 const contra = document.getElementById('contra');
-const contra1 = document.getElementById('colA');
-const contra2 = document.getElementById('colB');
+const contra0 = document.getElementById('colV');
 var droot = document.querySelector(':root');
 const fonteD = ' [<a target="_blank" href="https://www.inf.ufrgs.br/~oliveira/pubs_files/CVD_Simulation/CVD_Simulation.html">Fonte</a>]';
 const tavolozza = [
-	{ t:'Complementare', v: [0,180], p: 'Angolo opposto per tinta (H)' },
-	{ t:'Triadici', v: [0,120,240], p: 'Tre posizioni equidistanti su circonferenza variando la tinta (H)' },
-	{ t:'Tetradici', v: [0,90,180,270], p: 'Quattro posizioni equidistanti su circonferenza variando la tinta (H)' },
-	{ t:'Varia H', v: [-32,-24,-16,-8,0,8,16,24,32], p: 'Variazione della tinta (-32°,+32°), tenendo fisse saturazione e luminosità' },
-	{ t:'Varia S', p: 'Variazione della saturazione, tenendo fisse tinta e luminosità' },
-	{ t:'Varia L', p: 'Variazione della luminosità, tenendo fisse tinta e saturazione' },
-	{ t:'Varia LS', p: 'Variazione arbitraria di saturazione e luminosità, tenendo fissa solo la tinta' },
+	{ t:'Complementare', p: 'Angolo opposto per tinta (H)', vh: [0,180] },
+	{ t:'Triadici', p: 'Tre posizioni equidistanti su circonferenza variando la tinta (H)', vh: [0,120,240] },
+	{ t:'Tetradici', p: 'Quattro posizioni equidistanti su circonferenza variando la tinta (H)', vh: [0,90,180,270] },
+	{ t:'Varia H', p: 'Variazione della tinta (-32°,+32°), tenendo fisse saturazione e luminosità', vh: [-32,-24,-16,-8,0,8,16,24,32] },
+	{ t:'Varia S', p: 'Variazione della saturazione, tenendo fisse tinta e luminosità', vt: 's' },
+	{ t:'Varia L', p: 'Variazione della luminosità, tenendo fisse tinta e saturazione', vt: 'l' },
+	{ t:'Varia SL', p: 'Variazione arbitraria di saturazione e luminosità, tenendo fissa solo la tinta', vt: 'sl' },
 	{ t:'Protoanomalia', p: 'Simulazione approssimativa della percezione del colore con gravità tra 0 e 1 (passo 0.1)', m: [[[1,0,0],[0,1,0],[0,0,1]],[[0.856167,0.182038,-0.038205],[0.029342,0.955115,0.015544],[-0.00288,-0.001563,1.004443]],[[0.734766,0.334872,-0.069637],[0.05184,0.919198,0.028963],[-0.004928,-0.004209,1.009137]],[[0.630323,0.465641,-0.095964],[0.069181,0.890046,0.040773],[-0.006308,-0.007724,1.014032]],[[0.539009,0.579343,-0.118352],[0.082546,0.866121,0.051332],[-0.007136,-0.011959,1.019095]],[[0.458064,0.679578,-0.137642],[0.092785,0.846313,0.060902],[-0.007494,-0.016807,1.024301]],[[0.38545,0.769005,-0.154455],[0.100526,0.829802,0.069673],[-0.007442,-0.02219,1.029632]],[[0.319627,0.849633,-0.169261],[0.106241,0.815969,0.07779],[-0.007025,-0.028051,1.035076]],[[0.259411,0.923008,-0.18242],[0.110296,0.80434,0.085364],[-0.006276,-0.034346,1.040622]],[[0.203876,0.990338,-0.194214],[0.112975,0.794542,0.092483],[-0.005222,-0.041043,1.046265]],[[0.152286,1.052583,-0.204868],[0.114503,0.786281,0.099216],[-0.003882,-0.048116,1.051998]]] },
 	{ t:'Deuteranomalia', p: 'Simulazione approssimativa della percezione del colore con gravità tra 0 e 1 (passo 0.1)', m: [[[1,0,0],[0,1,0],[0,0,1]],[[0.866435,0.177704,-0.044139],[0.049567,0.939063,0.01137],[-0.003453,0.007233,0.99622]],[[0.760729,0.319078,-0.079807],[0.090568,0.889315,0.020117],[-0.006027,0.013325,0.992702]],[[0.675425,0.43385,-0.109275],[0.125303,0.847755,0.026942],[-0.00795,0.018572,0.989378]],[[0.605511,0.52856,-0.134071],[0.155318,0.812366,0.032316],[-0.009376,0.023176,0.9862]],[[0.547494,0.607765,-0.155259],[0.181692,0.781742,0.036566],[-0.01041,0.027275,0.983136]],[[0.498864,0.674741,-0.173604],[0.205199,0.754872,0.039929],[-0.011131,0.030969,0.980162]],[[0.457771,0.731899,-0.18967],[0.226409,0.731012,0.042579],[-0.011595,0.034333,0.977261]],[[0.422823,0.781057,-0.203881],[0.245752,0.709602,0.044646],[-0.011843,0.037423,0.974421]],[[0.392952,0.82361,-0.216562],[0.263559,0.69021,0.046232],[-0.01191,0.040281,0.97163]],[[0.367322,0.860646,-0.227968],[0.280085,0.672501,0.047413],[-0.01182,0.04294,0.968881]]] },
 	{ t:'Tritanomalia', p: 'Simulazione approssimativa della percezione del colore con gravità tra 0 e 1 (passo 0.1)', m: [[[1,0,-0],[0,1,0],[-0,-0,1]],[[0.92667,0.092514,-0.019184],[0.021191,0.964503,0.014306],[0.008437,0.054813,0.93675]],[[0.89572,0.13333,-0.02905],[0.029997,0.9454,0.024603],[0.013027,0.104707,0.882266]],[[0.905871,0.127791,-0.033662],[0.026856,0.941251,0.031893],[0.01341,0.148296,0.838294]],[[0.948035,0.08949,-0.037526],[0.014364,0.946792,0.038844],[0.010853,0.193991,0.795156]],[[1.017277,0.027029,-0.044306],[-0.006113,0.958479,0.047634],[0.006379,0.248708,0.744913]],[[1.104996,-0.046633,-0.058363],[-0.032137,0.971635,0.060503],[0.001336,0.317922,0.680742]],[[1.193214,-0.109812,-0.083402],[-0.058496,0.97941,0.079086],[-0.002346,0.403492,0.598854]],[[1.257728,-0.139648,-0.118081],[-0.078003,0.975409,0.102594],[-0.003316,0.501214,0.502102]],[[1.278864,-0.125333,-0.153531],[-0.084748,0.957674,0.127074],[-0.000989,0.601151,0.399838]],[[1.255528,-0.076749,-0.178779],[-0.078411,0.930809,0.147602],[0.004733,0.691367,0.3039]]] }
@@ -186,67 +186,55 @@ const tavolozza = [
 const pal = [];
 
 function testColore(a) {
-	if (a == null) return false;
+	if (!a) return false;
 	a = a.trim().toUpperCase();
-	if (a.length !== 3 && a.length !== 6) return false;
-	if (!/^[0-9A-F]+$/.test(a)) return false;
-	if (a.length === 3) a = a.split('').map(c => c + c).join('');
-	return a;
+	if (!/^([0-9A-F]{3}|[0-9A-F]{6})$/.test(a)) return false;
+	return a.length === 3 ? a.replace(/./g, c => c + c) : a;
 }
 
-function rgb2hex(r, g, b) {
-	return `${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase()}`;
+function rgb2hex({r, g, b}) {
+	return ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase();
 }
+
 
 function hex2rgb(hex) {
-	const result = /^([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-	return result ? {
-		r: parseInt(result[1], 16),
-		g: parseInt(result[2], 16),
-		b: parseInt(result[3], 16)
+	const cols = /^([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+	return cols ? {
+		r: parseInt(cols[1], 16),
+		g: parseInt(cols[2], 16),
+		b: parseInt(cols[3], 16)
 	} : null;
 }
 
-function rgb2hsl(r, g, b) {
-	r /= 255;
-	g /= 255;
-	b /= 255;
-
+function rgb2hsl({r, g, b}) {
+	r /= 255; g /= 255; b /= 255;
 	const max = Math.max(r, g, b), min = Math.min(r, g, b);
-	let h, s, l = (max + min) / 2;
+	const delta = max - min, somma = max + min;
+	let h = 0, s = 0, l = somma / 2;
 
-	if (max === min) {
-		h = s = 0;
-	} else {
-		const d = max - min;
-		s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+	if (delta !== 0) {
+		s = l > 0.5 ? delta / (2 - somma) : delta / somma;
 		switch (max) {
-			case r: h = (g - b) / d + (g < b ? 6 : 0); break;
-			case g: h = (b - r) / d + 2; break;
-			case b: h = (r - g) / d + 4; break;
+			case r: h = ((g - b) / delta + (g < b ? 6 : 0)); break;
+			case g: h = ((b - r) / delta + 2); break;
+			case b: h = ((r - g) / delta + 4); break;
 		}
-		h /= 6;
+		h *= 60;
 	}
 
-	return { h: Math.round(h * 360) % 360, s: Math.round(s * 100), l: Math.round(l * 100) };
+	return { h: Math.round(h) % 360, s: Math.round(s * 100), l: Math.round(l * 100) };
 }
 
-function hsl2rgb(h, s, l) {
-	s /= 100;
-	l /= 100;
-
+function hsl2rgb({h, s, l}) {
+	s /= 100; l /= 100;
 	const c = (1 - Math.abs(2 * l - 1)) * s;
 	const x = c * (1 - Math.abs((h / 60) % 2 - 1));
 	const m = l - c / 2;
-	let r = 0, g = 0, b = 0;
-
-	if (h >= 0 && h < 60) { r = c; g = x; b = 0; }
-	else if (h >= 60 && h < 120) { r = x; g = c; b = 0; }
-	else if (h >= 120 && h < 180) { r = 0; g = c; b = x; }
-	else if (h >= 180 && h < 240) { r = 0; g = x; b = c; }
-	else if (h >= 240 && h < 300) { r = x; g = 0; b = c; }
-	else if (h >= 300 && h < 360) { r = c; g = 0; b = x; }
-
+	let [r, g, b] = h < 60 ? [c, x, 0] :
+		h < 120 ? [x, c, 0] :
+		h < 180 ? [0, c, x] :
+		h < 240 ? [0, x, c] :
+		h < 300 ? [x, 0, c] : [c, 0, x];
 	return {
 		r: Math.round((r + m) * 255),
 		g: Math.round((g + m) * 255),
@@ -254,19 +242,44 @@ function hsl2rgb(h, s, l) {
 	};
 }
 
+function hsl2hsv({h, s, l}) {
+	s /= 100; l /= 100;
+	const v = l + s * Math.min(l, 1 - l);
+	return {
+		h,
+		s: v === 0 ? 0 : Math.round((2 * (1 - l / v)) * 100),
+		v: Math.round(v * 100)
+	};
+}
+
+function hsv2hsl({h, s, v}) {
+	s /= 100; v /= 100;
+	const l = v * (1 - s / 2);
+	const sl = l === 0 || l === 1 ? 0 : (v - l) / Math.min(l, 1 - l);
+	return {
+		h,
+		s: Math.round(sl * 100),
+		l: Math.round(l * 100)
+	};
+}
+
 function contrasto(a, b) {
 	const LumX = (t) => {
-		return (t/255 <= 0.03928) ? t / (255*12.92) : ((t/255 + 0.055) / 1.055) ** 2.4;
+		t /= 255;
+		return (t <= 0.03928) ? t/12.92 : ((t + 0.055) / 1.055) ** 2.4;
 	}
-	const Lum = (rgb) => {
-		return 0.2126 * LumX(rgb.r) + 0.7152 * LumX(rgb.g) + 0.0722 * LumX(rgb.b);
+	const Lum = ({r,g,b}) => {
+		return 0.2126 * LumX(r) + 0.7152 * LumX(g) + 0.0722 * LumX(b);
 	}
-	const L1 = Lum(a), L2 = Lum(b);
-	const Lmax = Math.max(L1, L2), Lmin = Math.min(L1, L2);
+	const [L1, L2] = [Lum(a), Lum(b)].sort((x, y) => y - x);
+	const c = Math.floor(((L1 + 0.05) / (L2 + 0.05)) * 100) / 100;
 
-	const t = Math.floor( 100*(Lmax+0.05)/(Lmin+0.05) ) / 100;
-	const val = (t>=7)?'ottimo':(t>=4.5)?'buono':(t>=3)?'accettabile, solo per testi grandi > 24px':'da evitare';
-	return { c: t, t: val };
+	const t = c >= 7 ? '≥7:1, ottimo'
+		: c >= 4.5 ? '≥ 4.5:1, buono'
+		: c >= 3 ? '≥ 3:1, accettabile solo per testi grandi > 24px'
+		: '< 3:1, da evitare';
+
+	return { c, t };
 }
 
 function mostraErrore(input) {
@@ -290,7 +303,7 @@ function disegna_h() {
 	}
 }
 
-function disegna_sl(hue) {
+function disegna_sl(h) {
 	const ctx = slCanvas.getContext('2d');
 	const width = slCanvas.width;
 	const height = slCanvas.height;
@@ -298,13 +311,11 @@ function disegna_sl(hue) {
 
 	for (let x = 0; x < width; x++) {
 		for (let y = 0; y < height; y++) {
-			const ds = x / width;
-			const dv = 1 - y / height;
+			const ds = 100 * x / width;
+			const dv = 100 * (1 - y / height);
 
-			let l = dv * (1 - ds/2);
-			let s = (l == 0 || l == 1)? 0 : (dv - l)/Math.min(l,1-l);
-			
-			const rgb = hsl2rgb(hue, s*100, l*100);
+			const hsl = hsv2hsl({h, s:ds, v:dv});
+			const rgb = hsl2rgb(hsl);
 
 			const index = (y * width + x) * 4;
 			imgData.data[index] = rgb.r;
@@ -326,75 +337,106 @@ function aggiornaC(hex, hex2) {
 	aggiorna('hex');
 }
 
-function sColore(h, s, l, t, p) {
-	if (!pal[p]) pal[p] = [];
-	const rgb = hsl2rgb(h, s, l);
-	const hex = rgb2hex(rgb.r, rgb.g, rgb.b);
+function sColore(hsl, t, p) {
+	const rgb = hsl2rgb(hsl);
+	const hex = rgb2hex(rgb);
+
+	pal[p] = pal[p] || [];
 	pal[p].push(`#${hex}`);
-	const ct1 = contrasto(rgb, { r: 255, g: 255, b: 255});
-	const ct2 = contrasto(rgb, { r: 0, g: 0, b: 0});
-	const ct = (ct1.c >= ct2.c)?'#fff':'#000';
+
+	const cB = contrasto(rgb, { r: 255, g: 255, b: 255});
+	const cN = contrasto(rgb, { r: 0, g: 0, b: 0});
+	const tColor = (cB.c >= cN.c)?'#fff':'#000';
 
 	const d = document.createElement('div');
 	d.style.background = `#${hex}`;
-	if (t) {
-		d.className = 'curr';
-	} else {
+	d.className = t?'curr':'';
+	if (!t) {
 		d.addEventListener('click', (event) => { aggiornaC(hex); });
 	}
 	const dt = document.createElement('span');
 	dt.style.background = `#${hex}`;
-	dt.style.color = ct;
-	dt.innerHTML = `HEX:&nbsp;#${hex}<br/>
+	dt.style.color = tColor;
+	dt.innerHTML = `
+		HEX:&nbsp;#${hex}<br/>
 		RGB:&nbsp;(${rgb.r},${rgb.g},${rgb.b})<br/>
-		HSL:&nbsp;(${Math.round(h)},${Math.round(s)},${Math.round(l)})`;
+		HSL:&nbsp;(${Math.round(hsl.h)},${Math.round(hsl.s)},${Math.round(hsl.l)})`;
 	d.appendChild(dt);
+
 	return d;
 }
 
+function parseRgbInput() {
+	const r = parseInt(rgbInput.r.value, 10);
+	if (isNaN(r) || r < 0 || r > 255) return mostraErrore(rgbInput.r);
+	const g = parseInt(rgbInput.g.value, 10);
+	if (isNaN(g) || g < 0 || g > 255) return mostraErrore(rgbInput.g);
+	const b = parseInt(rgbInput.b.value, 10);
+	if (isNaN(b) || b < 0 || b > 255) return mostraErrore(rgbInput.b);
+	return { r, g, b };
+}
+
+function parseHslInput() {
+	const h = parseInt(hslInput.h.value, 10) % 360;
+	if (isNaN(h) || h < 0 || h > 360) return mostraErrore(hslInput.h);
+	const s = parseInt(hslInput.s.value, 10);
+	if (isNaN(s) || s < 0 || s > 100) return mostraErrore(hslInput.s);
+	const l = parseInt(hslInput.l.value, 10);
+	if (isNaN(l) || l < 0 || l > 100) return mostraErrore(hslInput.l);
+	return { h, s, l };
+}
+
 function aggiorna(dati) {
-	var hex, hex2, rgb, rgb2, hsl;
-	if (dati == 'hex') {
+	let hex, hex2, rgb, rgb2, hsl;
+
+	if (dati === 'hex') {
 		hex = hexInput.value;
 		rgb = hex2rgb(hex);
-		if (!rgb) { mostraErrore(hexInput); return;	}
-		hsl = rgb2hsl(rgb.r, rgb.g, rgb.b);
+		if (!rgb) return mostraErrore(hexInput);
+		hsl = rgb2hsl(rgb);
 		hex2 = hex2Input.value;
 		rgb2 = hex2rgb(hex2);
-	} else if (dati == 'rgb') {
-		const r = parseInt(rgbInput.r.value, 10);
-		const g = parseInt(rgbInput.g.value, 10);
-		const b = parseInt(rgbInput.b.value, 10);
-		if (isNaN(r) || r < 0 || r > 255) { mostraErrore(hslInput.r); return; }
-		if (isNaN(g) || g < 0 || g > 255) { mostraErrore(hslInput.g); return; }
-		if (isNaN(b) || b < 0 || b > 255) { mostraErrore(hslInput.b); return; }
-		rgb = { r, g, b };
-		hex = rgb2hex(r, g, b);
-		hsl = rgb2hsl(r, g, b);
+	} else if (dati === 'rgb') {
+		rgb = parseRgbInput();
+		if (!rgb) return;
+		hex = rgb2hex(rgb);
+		hsl = rgb2hsl(rgb);
 		hex2 = hex2Input.value;
 		rgb2 = hex2rgb(hex2);
-	} else if (dati == 'hsl') {
-		const h = parseInt(hslInput.h.value, 10) % 360;
-		const s = parseInt(hslInput.s.value, 10);
-		const l = parseInt(hslInput.l.value, 10);
-		if (isNaN(h) || h < 0 || h > 360) { mostraErrore(hslInput.h); return; }
-		if (isNaN(s) || s < 0 || s > 100) { mostraErrore(hslInput.s); return; }
-		if (isNaN(l) || l < 0 || l > 100) { mostraErrore(hslInput.l); return; }
-		hsl = { h, s, l };
-		rgb = hsl2rgb(h, s, l);
-		hex = rgb2hex(rgb.r, rgb.g, rgb.b);
+	} else if (dati === 'hsl') {
+		hsl = parseHslInput();
+		if (!hsl) return;
+		rgb = hsl2rgb(hsl);
+		hex = rgb2hex(rgb);
 		hex2 = hex2Input.value;
 		rgb2 = hex2rgb(hex2);
-	} else if (dati = 'hex2') {
+	} else if (dati === 'hex2') {
 		hex = hexInput.value;
 		rgb = hex2rgb(hex);
+		hsl = rgb2hsl(rgb);
 		hex2 = hex2Input.value;
 		rgb2 = hex2rgb(hex2);
-		if (!rgb2) { mostraErrore(hex2Input); return; }
-		hsl = rgb2hsl(rgb.r, rgb.g, rgb.b);
+		if (!rgb2) return mostraErrore(hex2Input);
 	}
 
 	nascondiErrore();
+	aggInput(hex, hex2, rgb, hsl);
+
+	const cAB = contrasto(rgb, rgb2);
+	contra.innerHTML = `<b>${cAB.c}:1</b> (${cAB.t})`;
+	contra0.className = cAB.c>4.5?'vis1':'vis0';
+
+	aggPunti(hsl);
+	droot.style.setProperty('--v0', `#${hex}`);
+	droot.style.setProperty('--v1', `#${hex2}`);
+	disegna_sl(hsl.h);
+
+	generaColori(hsl, rgb, hex, risultati);
+
+	aggiornaURL({ c: hex.toUpperCase(), c2: hex2.toUpperCase() });
+}
+
+function aggInput(hex, hex2, rgb, hsl) {
 	hexInput.value = hex;
 	hex2Input.value = hex2;
 	rgbInput.r.value = rgb.r;
@@ -403,195 +445,130 @@ function aggiorna(dati) {
 	hslInput.h.value = hsl.h;
 	hslInput.s.value = hsl.s;
 	hslInput.l.value = hsl.l;
-
-	const contrC = contrasto(rgb, rgb2);
-	contra.innerHTML = `<b>${contrC.c}:1</b> (${contrC.t})`;
-
-	aggPunti(hsl.h, hsl.s, hsl.l);
-	droot.style.setProperty('--v0', `#${hex}`);
-	droot.style.setProperty('--v1', `#${hex2}`);
-	disegna_sl(hsl.h);
-
-	const risultati = document.getElementById('risultati');
-
-	risultati.innerHTML = '';
-
-	for (const [k, vs] of Object.entries(tavolozza)) {
-		let primo = true;
-		if (k == 4) {
-			pal[k] = null;
-			const rigaT = document.createElement('h4');
-			rigaT.innerHTML = `${vs.t} <span title="Copia negli appunti" class='copia' onclick="navigator.clipboard.writeText(JSON.stringify(pal[${k}]))"></span>`;
-			risultati.appendChild(rigaT);
-
-			const riga = document.createElement('div');
-			riga.className = 'riga';
-
-			const minS = 5;
-			const maxS = 100;
-			const passi = [];
-			const passiNum = 10;
-			for (let i = 0; i < passiNum; i++) {
-				passi.push(minS + (i / (passiNum - 1)) * (maxS - minS));
-			}
-			const vicino = passi.reduce((prev, curr, idx) => {
-				return Math.abs(curr - hsl.s) < Math.abs(passi[prev] - hsl.s) ? idx : prev;
-			}, 0);
-			for (let i = 0; i < passiNum; i++) {
-				const currS = (i == vicino) ? hsl.s : (i < vicino)? (minS + (hsl.s - minS) * i/vicino) : ( hsl.s + (maxS - hsl.s) * (i - vicino)/(passiNum - 1 - vicino));
-				riga.appendChild(sColore (hsl.h, currS, hsl.l, i==vicino, 4));
-			}
-			risultati.appendChild(riga);
-
-			const rigaP = document.createElement('p');
-			rigaP.innerHTML = vs.p;
-			risultati.appendChild(rigaP);
-
-		} else if (k == 5) {
-			pal[k] = null;
-			const rigaT = document.createElement('h4');
-			rigaT.innerHTML = `${vs.t} <span title="Copia negli appunti" class='copia' onclick="navigator.clipboard.writeText(JSON.stringify(pal[${k}]))"></span>`;
-			risultati.appendChild(rigaT);
-
-			const riga = document.createElement('div');
-			riga.className = 'riga';
-
-			const minL = 5;
-			const maxL = 95;
-			const passi = [];
-			const passiNum = 10;
-			for (let i = 0; i < passiNum; i++) {
-				passi.push(minL + (i / (passiNum - 1)) * (maxL - minL));
-			}
-			const vicino = passi.reduce((prev, curr, idx) => {
-				return Math.abs(curr - hsl.l) < Math.abs(passi[prev] - hsl.l) ? idx : prev;
-			}, 0);
-			for (let i = 0; i < passiNum; i++) {
-				const currL = (i == vicino) ? hsl.l : (i < vicino)? (minL + (hsl.l - minL) * i/vicino) : ( hsl.l + (maxL - hsl.l) * (i - vicino)/(passiNum - 1 - vicino));
-				riga.appendChild(sColore (hsl.h, hsl.s, currL, i==vicino, 5));
-			}
-			risultati.appendChild(riga);
-
-			const rigaP = document.createElement('p');
-			rigaP.innerHTML = vs.p;
-			risultati.appendChild(rigaP);
-
-		} else if (k == 6) {
-			pal[k] = null;
-			const rigaT = document.createElement('h4');
-			rigaT.innerHTML = `${vs.t} <span title="Copia negli appunti" class='copia' onclick="navigator.clipboard.writeText(JSON.stringify(pal[${k}]))"></span>`;
-			risultati.appendChild(rigaT);
-
-			const riga = document.createElement('div');
-			riga.className = 'riga';
-
-			const minL = (hsl.l < 5)?0:15;
-			const maxL = (hsl.l > 95)?100:96;
-			const passi = [];
-			const passiNum = 10;
-			for (let i = 0; i < passiNum; i++) {
-				passi.push(minL + (i / (passiNum - 1)) * (maxL - minL));
-			}
-			const vicino = passi.reduce((prev, curr, idx) => {
-				return Math.abs(curr - hsl.l) < Math.abs(passi[prev] - hsl.l) ? idx : prev;
-			}, 0);
-
-			for (let i = 0; i < passiNum; i++) {
-				const currL = (i==vicino) ? hsl.l : (i < vicino)? (minL + (hsl.l - minL) * i/vicino) : ( hsl.l + (maxL - hsl.l) * (i - vicino)/(passiNum - 1 - vicino));
-				var currS;
-				if (hsl.l < 5 || hsl.l > 96 ) {
-					currS = hsl.s;
-				} else if (hsl.s >= 55 && hsl.s < 65) {
-					currS = hsl.s;
-				} else if (hsl.s < 55) {
-					if (i <= vicino) {
-						currS = 60 + (hsl.s - 60) * currL / hsl.l;
-					} else {
-						currS = hsl.s + (0 - hsl.s) * (currL - hsl.l) / (100 - hsl.l);
-					}
-				} else {
-					if (i <= vicino) {
-						currS = 100 + (hsl.s - 100) * currL / hsl.l;
-					} else {
-						currS = hsl.s + (60 - hsl.s) * (currL - hsl.l) / (100 - hsl.l);
-					}
-				}
-				riga.appendChild(sColore (hsl.h, currS, currL, i==vicino, 6));
-
-				const rgbroot = hsl2rgb(hsl.h, currS, currL);
-				droot.style.setProperty(('--c'+i), `#${rgb2hex(rgbroot.r,rgbroot.g,rgbroot.b)}`);
-			}
-			risultati.appendChild(riga);
-
-			const rigaP = document.createElement('p');
-			rigaP.innerHTML = vs.p;
-			risultati.appendChild(rigaP);
-		} else if (['7','8','9'].includes(k)) {
-			pal[k] = null;
-			const rigaT = document.createElement('h4');
-			rigaT.innerHTML = `${vs.t} <span title="Copia negli appunti" class='copia' onclick="navigator.clipboard.writeText(JSON.stringify(pal[${k}]))"></span>`;
-			risultati.appendChild(rigaT);
-
-			const riga = document.createElement('div');
-			riga.className = 'riga';
-			const rgbx = [rgb.r, rgb.g, rgb.b];
-		
-			vs.m.forEach( (mm) => {
-				const rgby = mm.map(row => row.reduce((sum, val, i) => sum + val * rgbx[i], 0));
-				const hsly = rgb2hsl(
-					Math.min(255,Math.max(0,rgby[0])),
-					Math.min(255,Math.max(0,rgby[1])),
-					Math.min(255,Math.max(0,rgby[2]))
-				);
-				riga.appendChild(sColore (hsly.h, hsly.s, hsly.l, primo, k));
-				primo = false;
-			});
-			risultati.appendChild(riga);
-
-			const rigaP = document.createElement('p');
-			rigaP.innerHTML = vs.p + fonteD;
-			risultati.appendChild(rigaP);
-		} else {
-			pal[k] = null;
-			if (hsl.s > 0 && hsl.l > 0 && hsl.l < 100) {
-				const rigaT = document.createElement('h4');
-				rigaT.innerHTML = `${vs.t} <span title="Copia negli appunti" class='copia' onclick="navigator.clipboard.writeText(JSON.stringify(pal[${k}]))"></span>`;
-				risultati.appendChild(rigaT);
-
-				const riga = document.createElement('div');
-				riga.className = 'riga';
-
-				vs.v.forEach( (dd) => {
-					const dh = (hsl.h + dd + 360) % 360;
-					riga.appendChild(sColore (dh, hsl.s, hsl.l, dd==0, k));
-				});
-				risultati.appendChild(riga);
-
-				const rigaP = document.createElement('p');
-				rigaP.innerHTML = vs.p;
-				risultati.appendChild(rigaP);
-			}
-		}
-
-	}
-	aggiornaURL({ c: hex.toUpperCase(), c2: hex2.toUpperCase()});
 }
 
-function aggPunti(h, s, l) {
+function generaColori(hsl, rgb, hex, risultati) {
+	risultati.innerHTML = '';
+	for (const [k, vs] of Object.entries(tavolozza)) {
+		let rigaT = creaIntestazione(vs, k);
+		let riga = document.createElement('div');
+		riga.className = 'riga';
+
+		if (vs.vh) {
+			creaColH(riga, hsl, vs, k);
+		} else if (vs.m) {
+			creaColM(riga, rgb, vs, k);
+		} else if (vs.vt) {
+			switch (vs.vt) {
+				case 's':
+					creaColSL(riga, hsl, k, vs.vt, 5, 100); break;
+				case 'l':
+					creaColSL(riga, hsl, k, vs.vt, 5, 95); break;
+				case 'sl':
+					creaColA(riga, hsl, k); break;
+			}
+		}
+		risultati.append(rigaT, riga);
+		if (vs.m)
+			risultati.append(creaDescrizione(vs.p + fonteD));
+		else
+			risultati.append(creaDescrizione(vs.p));
+	}
+}
+
+function creaIntestazione(vs, k) {
+	const rigaT = document.createElement('h4');
+	rigaT.innerHTML = `${vs.t} <span title="Copia negli appunti" class='copia' onclick="navigator.clipboard.writeText(JSON.stringify(pal[${k}]))"></span>`;
+	return rigaT;
+}
+
+function creaDescrizione(descrizione) {
+	const rigaP = document.createElement('p');
+	rigaP.innerHTML = descrizione;
+	return rigaP;
+}
+
+function creaColH(riga, hsl, vs, k) {
+	vs.vh.forEach((dd) => {
+		const dh = (hsl.h + dd + 360) % 360;
+		riga.appendChild(sColore({h:dh, s:hsl.s, l:hsl.l}, dd === 0, k));
+	});
+}
+
+function creaColM(riga, rgb, vs, k) {
+	let primo = true;
+	const rgbx = [rgb.r, rgb.g, rgb.b];
+	vs.m.forEach( (mm) => {
+		const rgby = mm.map(row => row.reduce((sum, val, i) => sum + val * rgbx[i], 0));
+		const hsly = rgb2hsl({
+			r:Math.min(255,Math.max(0,rgby[0])),
+			g:Math.min(255,Math.max(0,rgby[1])),
+			b:Math.min(255,Math.max(0,rgby[2]))
+		});
+		riga.appendChild(sColore(hsly, primo, k));
+		primo = false;
+	});
+}
+
+function creaColSL(riga, hsl, k, t, min, max) {
+	const passiNum = 10;
+	const vicino = Math.round((passiNum-1)*(hsl[t] - min)/(max-min));
+	const passi2 = Array.from({ length: passiNum }, (_, i) =>
+		(i==vicino) ? hsl[t] :
+		(i<vicino) ? (min + (hsl[t] - min) * i / vicino) :
+		(hsl[t] + (max - hsl[t]) * (i-vicino) / (passiNum - 1 - vicino))
+	);
+	passi2.forEach((valore, i) => {
+		const modHsl = { ...hsl, [t]: valore };
+		riga.appendChild(sColore(modHsl, i === vicino, k));
+	});
+}
+
+function creaColA(riga, hsl, k) {
+	const passiNum = 10;
+	const min = (hsl.l < 5)?0:15;
+	const max = (hsl.l > 95)?100:96;
+	const hsl2 = {h:hsl.h, s:0,l:0};
+
+	const vicino = Math.round((passiNum-1)*(hsl.l - min)/(max-min));
+
+	for (let i = 0; i < passiNum; i++) {
+		hsl2.l =
+			(i==vicino) ? hsl.l :
+			(i < vicino)? (min + (hsl.l - min) * i/vicino) :
+			( hsl.l + (max - hsl.l) * (i - vicino)/(passiNum - 1 - vicino));
+		if (hsl.l < 5 || hsl.l > 96 || (hsl.s >= 55 && hsl.s < 65)) {
+			hsl2.s = hsl.s;
+		} else if (hsl.s < 55) {
+			if (i <= vicino) {
+				hsl2.s = 60 + (hsl.s - 60) * hsl2.l / hsl.l;
+			} else {
+				hsl2.s = hsl.s + (0 - hsl.s) * (hsl2.l - hsl.l) / (100 - hsl.l);
+			}
+		} else {
+			if (i <= vicino) {
+				hsl2.s = 100 + (hsl.s - 100) * hsl2.l / hsl.l;
+			} else {
+				hsl2.s = hsl.s + (60 - hsl.s) * (hsl2.l - hsl.l) / (100 - hsl.l);
+			}
+		}
+		riga.appendChild(sColore(hsl2, i==vicino, 6));
+
+		droot.style.setProperty(('--c'+i), `#${rgb2hex(hsl2rgb(hsl2))}`);
+	}
+}
+
+function aggPunti(hsl) {
 	const hPunto = document.getElementById('hPunto');
 	const slPunto = document.getElementById('slPunto');
 
-	const hY = (h / 360) * hCanvas.height;
+	const hsv = hsl2hsv(hsl);
+
+	const hY = (hsv.h / 360) * hCanvas.height;
 	hPunto.style.top = `${hY}px`;
 
-	var ds = s/100;
-	var dl = l/100;
-	let dv = dl + ds * Math.min(dl, 1 - dl);
-	let dX = (dv == 0)? 0 : 2*(1-dl/dv);
-	let dY = (1-dv);
-
-	slPunto.style.left = `${dX * slCanvas.width}px`;
-	slPunto.style.top = `${dY * slCanvas.height}px`;
+	slPunto.style.left = `${hsv.s * slCanvas.width / 100}px`;
+	slPunto.style.top = `${(100-hsv.v) * slCanvas.height / 100}px`;
 }
 
 hCanvas.addEventListener('click', (e) => {
