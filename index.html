@@ -526,8 +526,8 @@ function creaColSL(riga, hsl, k, t, min, max) {
 
 function creaColA(riga, hsl, k) {
 	const passiNum = 10;
-	const min = (hsl.l < 5)?0:15;
-	const max = (hsl.l > 95)?100:96;
+	const min = (hsl.l < 15)?0:15;
+	const max = (hsl.l > 96)?100:96;
 	const hsl2 = {h:hsl.h, s:0,l:0};
 
 	const vicino = Math.round((passiNum-1)*(hsl.l - min)/(max-min));
