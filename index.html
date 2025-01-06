@@ -574,7 +574,7 @@ function creaColA(r, hsl, vv = false) {
 		t = hsl2.l/100;
 		t0 = hsl.l/100;
 
-		hsl2.h = baseH + 5*(1-t);
+		hsl2.h = (baseH + 5*(1-t) + 360) % 360;
 		if (hsl.l == 50 || hsl.s == 100) {
 			hsl2.s = hsl.s;
 		} else if (hsl.s/100 >= 1 - 4*(t0 - 0.5)**2) {
